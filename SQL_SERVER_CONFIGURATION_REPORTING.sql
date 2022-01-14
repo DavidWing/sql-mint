@@ -5,8 +5,8 @@
 */
 
 /* PURPOSE: Reports Product Build and Memory Configuration for the SQL Server. */
-/* RESULTS: Data and Transaction Log files configured for database tempdb */
-/* NOTE:    You can replace 'tempdb' with any database on the SQL Server. */
+/* RESULTS: Single record */
+/* NOTE:    Uncomment or add other SERVERPROPERTY as needed. */
 /* SUPPORT: https://docs.microsoft.com/en-us/sql/t-sql/functions/serverproperty-transact-sql */
 
 use [master];
