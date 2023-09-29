@@ -1,0 +1,13 @@
+/* 
+ + must enable SQLCMD Mode in SSMS
+ + this is minified
+*/
+:connect ZZZ\xxx
+GO
+/* SQL 2016+ */SET NOCOUNT ON; DROP TABLE IF EXISTS #ocn; CREATE TABLE #ocn ([BusSeqId] [int] IDENTITY(1,1), [AffectedCI] [nvarchar](257)); DECLARE @current_host AS [nvarchar](128) = CONVERT([varchar](128), serverproperty('ComputerNamePhysicalNetBIOS')); DECLARE @affected_ci AS [nvarchar](257) = @@servicename + '@' + @current_host; DECLARE @affected_cis AS [nvarchar](2570) = N''; DECLARE @node_counter AS [int] = 0; DECLARE @node_count AS [int]; INSERT #ocn ([AffectedCI]) SELECT @@servicename + N'@' + [NodeName] AS AffectedCI FROM sys.dm_os_cluster_nodes ORDER BY [NodeName] ASC; SET @node_count = @@ROWCOUNT; IF @node_count = 0 BEGIN INSERT #ocn ([AffectedCI]) VALUES (@affected_ci); SET @node_count = @@ROWCOUNT; END WHILE @node_counter < @node_count BEGIN SET @node_counter += 1; SET @affected_cis += (SELECT [AffectedCI] + N';' FROM #ocn WHERE [BusSeqId] = @node_counter); END SELECT ec.local_net_address, @current_host AS ComputerNamePhysicalNetBIOS, @@servername AS SQL_Server, @@servicename AS SQL_Server_Service, ec.local_tcp_port AS SQL_Server_Service_TcpPort, @affected_cis AS AffectedCIs, @affected_ci AS AffectedCI_for_CurrentHost FROM sys.dm_exec_connections ec WHERE session_id = @@SPID ; DROP TABLE IF EXISTS #ocn;
+SELECT @@servername as SqlServer, * FROM sys.dm_os_windows_info
+GO
+/* SQL 2014- */SET NOCOUNT ON; /*DROP TABLE IF EXISTS #ocn;*/ CREATE TABLE #ocn ([BusSeqId] [int] IDENTITY(1,1), [AffectedCI] [nvarchar](257)); DECLARE @current_host AS [nvarchar](128) = CONVERT([varchar](128), serverproperty('ComputerNamePhysicalNetBIOS')); DECLARE @affected_ci AS [nvarchar](257) = @@servicename + '@' + @current_host; DECLARE @affected_cis AS [nvarchar](2570) = N''; DECLARE @node_counter AS [int] = 0; DECLARE @node_count AS [int]; INSERT #ocn ([AffectedCI]) SELECT @@servicename + N'@' + [NodeName] AS AffectedCI FROM sys.dm_os_cluster_nodes ORDER BY [NodeName] ASC; SET @node_count = @@ROWCOUNT; IF @node_count = 0 BEGIN INSERT #ocn ([AffectedCI]) VALUES (@affected_ci); SET @node_count = @@ROWCOUNT; END WHILE @node_counter < @node_count BEGIN SET @node_counter += 1; SET @affected_cis += (SELECT [AffectedCI] + N';' FROM #ocn WHERE [BusSeqId] = @node_counter); END SELECT ec.local_net_address, @current_host AS ComputerNamePhysicalNetBIOS, @@servername AS SQL_Server, @@servicename AS SQL_Server_Service, ec.local_tcp_port AS SQL_Server_Service_TcpPort, @affected_cis AS AffectedCIs, @affected_ci AS AffectedCI_for_CurrentHost FROM sys.dm_exec_connections ec WHERE session_id = @@SPID ; /*DROP TABLE IF EXISTS #ocn;*/
+SELECT @@servername as SqlServer, * FROM sys.dm_os_windows_info
+GO
+
